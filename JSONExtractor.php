@@ -1,0 +1,72 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of JSONExtractor
+ *
+ * @author ricardperez
+ */
+class JSONExtractor
+{
+  public function extractProductsFromJSON($html, $descriptionFileJSON, $site)
+  {
+    $elements = array();
+
+    $json = json_decode($html, true);
+
+    $jsonItems = $this->getJSON($json, $descriptionFileJSON['elementsList']);
+    foreach ($jsonItems as $jsonItem)
+    {
+      $element = $this->createProductFromJSON($jsonItem, $descriptionFileJSON["element"]);
+      if ($element != null)
+      {
+        $element->setSite($site);
+        array_push($elements, $element);
+      }
+    }
+
+    return $elements;
+  }
+  
+  private function getJSON($rootJSON, $pathJSON)
+  {
+    $result = $rootJSON;
+    foreach ($pathJSON as $nextPath)
+    {
+      $result = $result[$nextPath];
+      if ($result == null)
+      {
+        break;
+      }
+    }
+    
+    return $result;
+  }
+  
+  private function createProductFromJSON($jsonItem, $descriptionJSON)
+  {
+    $result = new Product();
+    
+    foreach ($descriptionJSON as $attributeJson)
+    {
+      $attributeName = $attributeJson['attribute'];
+      $attributeValue = $this->getJSON($jsonItem, $attributeJson['schema']);
+      
+      if ($attributeJson['format'])
+      {
+        $format = $attributeJson['format'];
+        $attributeValue = strtr($format, array('{{%}}' => $attributeValue));
+      }
+
+      $result->setAttribute($attributeName, $attributeValue);
+    }
+
+    return ($result->isNull() ? null : $result);
+  }
+
+}
