@@ -6,7 +6,6 @@
  * and open the template in the editor.
  */
 
-require_once 'Product.php';
 require_once 'AttributeFormatParser.php';
 
 /**
@@ -30,7 +29,7 @@ class DOMExtractor
       $element = $this->createProductFromDOMElement($listElement, $descriptionFileJSON["element"]);
       if ($element != null)
       {
-        $element->setSite($site);
+        $element['site'] = $site;
         array_push($elements, $element);
       }
     }
@@ -168,17 +167,17 @@ class DOMExtractor
 
   private function createProductFromDOMElement(DOMNode $element, $json)
   {
-    $result = new Product();
+    $result = array();
 
     foreach ($json as $attributeJson)
     {
       $attributeName = $attributeJson['attribute'];
       $attributeValue = $this->getDOMElementAttribute($element, $attributeJson);
 
-      $result->setAttribute($attributeName, $attributeValue);
+      $result[$attributeName] = $attributeValue;
     }
 
-    return ($result->isNull() ? null : $result);
+    return $result;
   }
 
 }

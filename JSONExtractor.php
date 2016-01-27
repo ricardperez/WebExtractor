@@ -6,6 +6,8 @@
  * and open the template in the editor.
  */
 
+require_once 'AttributeFormatParser.php';
+
 /**
  * Description of JSONExtractor
  *
@@ -25,7 +27,7 @@ class JSONExtractor
       $element = $this->createProductFromJSON($jsonItem, $descriptionFileJSON["element"]);
       if ($element != null)
       {
-        $element->setSite($site);
+        $element['site'] = $site;
         array_push($elements, $element);
       }
     }
@@ -50,7 +52,7 @@ class JSONExtractor
   
   private function createProductFromJSON($jsonItem, $descriptionJSON)
   {
-    $result = new Product();
+    $result = array();
     
     foreach ($descriptionJSON as $attributeJson)
     {
@@ -60,13 +62,13 @@ class JSONExtractor
       if ($attributeJson['format'])
       {
         $format = $attributeJson['format'];
-        $attributeValue = strtr($format, array('{{%}}' => $attributeValue));
+        $attributeValue = AttributeFormatParser::getInstance()->parse($format, $toReturn);
       }
 
-      $result->setAttribute($attributeName, $attributeValue);
+      $result[$attributeName] = $attributeValue;
     }
 
-    return ($result->isNull() ? null : $result);
+    return $result;
   }
 
 }
