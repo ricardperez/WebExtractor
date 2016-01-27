@@ -16,9 +16,9 @@ class WebExtractor
    * 
    * @return array
    */
-  public function extractAll($parameters)
+  public function extractAll($descriptionsFilePath, $parameters)
   {
-    $descriptionJson = json_decode(file_get_contents('resources/descriptions.json'), true);
+    $descriptionJson = json_decode(file_get_contents($descriptionsFilePath), true);
     $configurations = $descriptionJson['files'];
 
     $urlParameters = array();
