@@ -6,7 +6,7 @@ It is possible to extract data from normal HTML websites or to get it from a JSO
 The most important thing to do to use this library is to define a descriptions.json file that will be given to the WebExtractor::extractAll() method.
 
 This is a sample descriptions.json file contents:
-
+```json
 {
 	"files":
 	[
@@ -24,6 +24,7 @@ This is a sample descriptions.json file contents:
 		}
 	]
 }
+```
 
 So this json has a "files" array that contains a description for each website where it will extract elements from.
 This is the parameters description:
@@ -37,6 +38,7 @@ Here I let you 2 examples of website specific description json files (one for th
 
 
 website1_json_desc.json:
+```json
   {
     "id": "an identifier",
     "elementsList":
@@ -64,6 +66,7 @@ website1_json_desc.json:
       }
     ]
   }
+```
 
   - id: this attribute is not being used at the moment
   - elementsList: an array that will let the parser know how to access the elements array in the json got from the URL. Each of its elements has to be a key of the last object. The last one has to be the one that will give it the array of elements.
@@ -74,6 +77,7 @@ website1_json_desc.json:
 
 
 website2_dom_desc.json
+```json
   {
     "id": "another identifier",
     "elementsList":
@@ -168,6 +172,7 @@ website2_dom_desc.json
       }
     ]
   }
+```
 
   - id: this attribute is not being used at the moment
   - elementsList: an array that will let the parser know how to access the elements array in the json got from the URL. Each of its elements has the following parameters. The last one has to drive the parser to a container that contains all the elements dom nodes.
