@@ -15,6 +15,7 @@ require_once 'AttributeFormatParser.php';
  */
 class JSONExtractor
 {
+
   public function extractProductsFromJSON($html, $descriptionFileJSON, $site)
   {
     $elements = array();
@@ -22,19 +23,22 @@ class JSONExtractor
     $json = json_decode($html, true);
 
     $jsonItems = $this->getJSON($json, $descriptionFileJSON['elementsList']);
-    foreach ($jsonItems as $jsonItem)
+    if (is_array($jsonItems))
     {
-      $element = $this->createProductFromJSON($jsonItem, $descriptionFileJSON["element"]);
-      if ($element != null)
+      foreach ($jsonItems as $jsonItem)
       {
-        $element['site'] = $site;
-        array_push($elements, $element);
+        $element = $this->createProductFromJSON($jsonItem, $descriptionFileJSON["element"]);
+        if ($element != null)
+        {
+          $element['site'] = $site;
+          array_push($elements, $element);
+        }
       }
     }
 
     return $elements;
   }
-  
+
   private function getJSON($rootJSON, $pathJSON)
   {
     $result = $rootJSON;
@@ -46,23 +50,24 @@ class JSONExtractor
         break;
       }
     }
-    
+
     return $result;
   }
-  
+
   private function createProductFromJSON($jsonItem, $descriptionJSON)
   {
     $result = array();
-    
+
     foreach ($descriptionJSON as $attributeJson)
     {
       $attributeName = $attributeJson['attribute'];
       $attributeValue = $this->getJSON($jsonItem, $attributeJson['schema']);
-      
+
       if ($attributeJson['format'])
       {
         $format = $attributeJson['format'];
-        $attributeValue = AttributeFormatParser::getInstance()->parse($format, $toReturn);
+        $attributeParser = new AttributeFormatParser($attributeValue, null);
+        $attributeValue = $attributeParser->parse($format);
       }
 
       $result[$attributeName] = $attributeValue;

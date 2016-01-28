@@ -14,23 +14,16 @@
 class AttributeFormatParser
 {
 
-  private static $singleton = null;
-
-  public static function getInstance()
-  {
-    if (static::$singleton == null)
-    {
-      static::$singleton = new AttributeFormatParser();
-    }
-    return static::$singleton;
-  }
-
   private $value;
-
-  public function parse($string, $value)
+  private $parameters;
+  public function AttributeFormatParser($value, $parameters)
   {
     $this->value = $value;
+    $this->parameters = $parameters;
+  }
 
+  public function parse($string)
+  {
     $result = $string;
 
     $openStr = "{{";
@@ -92,6 +85,8 @@ class AttributeFormatParser
         "range" => array($this, "filterRangeCharacters"),
         "split" => array($this, "filterSplit"),
         "at" => array($this, "filterAt"),
+        "replace" => array($this, "filterReplace"),
+        "urlEncode" => array($this, "filterURLEncode"),
     );
 
     $methodToCall = $parseFilterMethods[$functionName];
@@ -100,13 +95,18 @@ class AttributeFormatParser
       return $methodToCall($parameters);
     } else
     {
-      return "";
+      return $this->filterAttribute($functionName);
     }
   }
 
   private function filterValue($parameters)
   {
     return $this->value;
+  }
+  
+  private function filterAttribute($attributeName)
+  {
+    return $this->parameters[$attributeName];
   }
 
   private function filterLastCharacters($parameters)
@@ -140,6 +140,20 @@ class AttributeFormatParser
     $index = intval($parameters[1]);
 
     return $strings[$index];
+  }
+  
+  private function filterReplace($parameters)
+  {
+    $string = $parameters[0];
+    $search = $parameters[1];
+    $replace = $parameters[2];
+    return str_replace($search, $replace, $string);
+  }
+  
+  private function filterURLEncode($parameters)
+  {
+    $string = $parameters[0];
+    return urlencode($string);
   }
 
 }

@@ -8,6 +8,7 @@
 
 require_once 'DOMExtractor.php';
 require_once 'JSONExtractor.php';
+require_once 'AttributeFormatParser.php';
 
 class WebExtractor
 {
@@ -20,13 +21,9 @@ class WebExtractor
   {
     $descriptionJson = json_decode(file_get_contents($descriptionsFilePath), true);
     $configurations = $descriptionJson['files'];
-
-    $urlParameters = array();
-    foreach ($parameters as $key => $value)
-    {
-      $urlParameters["{{" . $key . "}}"] = $value;
-    }
-
+    
+    $urlAttributeParser = new AttributeFormatParser("", $parameters);
+    
     $allItems = array();
 
     foreach ($configurations as $configuration)
@@ -34,8 +31,8 @@ class WebExtractor
       if ($this->areRequiredParametersFulfilled($configuration['requiredParameters'], $parameters))
       {
         $site = $configuration['name'];
-        $url = strtr($configuration['url'], $urlParameters);
-
+        $url = $urlAttributeParser->parse($configuration['url']);
+        
         $items = $this->extractProductsFromSite($site, $url, $configuration['file'], $configuration['type']);
 
         $allItems = array_merge($allItems, $items);
@@ -62,6 +59,8 @@ class WebExtractor
   private function extractProductsFromSite($site, $url, $descriptionFile, $type)
   {
     $elements = array();
+    
+    echo "$url <br/>";
 
     $ch = curl_init();
     $timeout = 5;

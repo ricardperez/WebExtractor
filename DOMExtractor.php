@@ -158,7 +158,8 @@ class DOMExtractor
       if ($json['value']['format'])
       {
         $format = $json['value']['format'];
-        $toReturn = AttributeFormatParser::getInstance()->parse($format, $toReturn);
+        $attributeParser = new AttributeFormatParser($toReturn, null);
+        $toReturn = $attributeParser->parse($format);
       }
     }
 
