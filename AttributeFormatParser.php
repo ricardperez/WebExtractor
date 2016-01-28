@@ -87,6 +87,8 @@ class AttributeFormatParser
         "at" => array($this, "filterAt"),
         "replace" => array($this, "filterReplace"),
         "urlEncode" => array($this, "filterURLEncode"),
+        "number" => array($this, "filterNumber"),
+        "lowercase" => array($this, "filterLowercase"),
     );
 
     $methodToCall = $parseFilterMethods[$functionName];
@@ -154,6 +156,18 @@ class AttributeFormatParser
   {
     $string = $parameters[0];
     return urlencode($string);
+  }
+  
+  private function filterNumber($parameters)
+  {
+    $string = $parameters[0];
+    return (float)$string;
+  }
+  
+  private function filterLowercase($parameters)
+  {
+    $string = $parameters[0];
+    return strtolower($string);
   }
 
 }
