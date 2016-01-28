@@ -59,8 +59,6 @@ class WebExtractor
   private function extractProductsFromSite($site, $url, $descriptionFile, $type)
   {
     $elements = array();
-    
-    echo "$url <br/>";
 
     $ch = curl_init();
     $timeout = 5;
