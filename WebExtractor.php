@@ -31,15 +31,32 @@ class WebExtractor
 
     foreach ($configurations as $configuration)
     {
-      $site = $configuration['name'];
-      $url = strtr($configuration['url'], $urlParameters);
+      if ($this->areRequiredParametersFulfilled($configuration['requiredParameters'], $parameters))
+      {
+        $site = $configuration['name'];
+        $url = strtr($configuration['url'], $urlParameters);
 
-      $items = $this->extractProductsFromSite($site, $url, $configuration['file'], $configuration['type']);
+        $items = $this->extractProductsFromSite($site, $url, $configuration['file'], $configuration['type']);
 
-      $allItems = array_merge($allItems, $items);
+        $allItems = array_merge($allItems, $items);
+      }
     }
 
     return $allItems;
+  }
+
+  private function areRequiredParametersFulfilled($requiredParameters, $parameters)
+  {
+    for ($i = 0; $i < count($requiredParameters); $i++)
+    {
+      $requiredParameter = $requiredParameters[$i];
+      if ($parameters[$requiredParameter] === null)
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private function extractProductsFromSite($site, $url, $descriptionFile, $type)
@@ -51,7 +68,7 @@ class WebExtractor
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-    curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17');
 
     $html = curl_exec($ch);
     curl_close($ch);
