@@ -5,7 +5,7 @@ It is possible to extract data from normal HTML websites or to get it from a JSO
 
 The most important thing to do to use this library is to define a descriptions.json file that will be given to the WebExtractor::extractAll() method.
 
-This is a sample *descriptions.json* file contents:
+This is a sample **descriptions.json** file contents:
 ```json
 {
 	"files":
@@ -37,7 +37,7 @@ This is the parameters description:
 Here I let you 2 examples of website specific description json files (one for the dom type, and one for the json type).
 
 
-*website1_json_desc.json:*
+**website1_json_desc.json:**
 ```json
   {
     "id": "an identifier",
@@ -76,7 +76,7 @@ Here I let you 2 examples of website specific description json files (one for th
       - *format*: (optional) a string to format the value. See the AttributeFormatParser.php documentation for more details.
 
 
-*website2_dom_desc.json*
+**website2_dom_desc.json**
 ```json
   {
     "id": "another identifier",
