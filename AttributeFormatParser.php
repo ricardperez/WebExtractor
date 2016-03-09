@@ -89,6 +89,7 @@ class AttributeFormatParser
         "urlEncode" => array($this, "filterURLEncode"),
         "number" => array($this, "filterNumber"),
         "lowercase" => array($this, "filterLowercase"),
+        "removeLastCharacters" => array($this, "filterRemoveLastCharacters"),
     );
 
     $methodToCall = $parseFilterMethods[$functionName];
@@ -168,6 +169,14 @@ class AttributeFormatParser
   {
     $string = $parameters[0];
     return strtolower($string);
+  }
+  
+  private function filterRemoveLastCharacters($parameters)
+  {
+    $string = $parameters[0];
+    $count = count($string) - intval($parameters[1]);
+
+    return $this->filterRangeCharacters([$string, 0, $count]);
   }
 
 }
