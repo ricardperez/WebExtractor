@@ -6,17 +6,27 @@
  * and open the template in the editor.
  */
 
+require_once 'Driver.php';
 require_once 'AttributeFormatParser.php';
 
 /**
- * Description of JSONExtractor
+ * Description of JSONDriver
  *
  * @author ricardperez
  */
-class JSONExtractor
+class JSONDriver extends Driver
 {
 
-  public function extractProductsFromJSON($html, $descriptionFileJSON, $site)
+  public function extractProducts($url, $parameters, $descriptionFileJSON)
+  {
+    $urlAttributeParser = new AttributeFormatParser("", $parameters);
+    $formattedURL= $urlAttributeParser->parse($url);
+    $html = $this->getHTMLContentsFromURL($formattedURL);
+    
+    return $this->extractProductsFromHTML($html, $descriptionFileJSON);
+  }
+  
+  protected function extractProductsFromHTML($html, $descriptionFileJSON)
   {
     $elements = array();
 
@@ -30,7 +40,6 @@ class JSONExtractor
         $element = $this->createProductFromJSON($jsonItem, $descriptionFileJSON["element"]);
         if ($element != null)
         {
-          $element['site'] = $site;
           array_push($elements, $element);
         }
       }

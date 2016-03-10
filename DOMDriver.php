@@ -6,16 +6,26 @@
  * and open the template in the editor.
  */
 
+require_once 'Driver.php';
 require_once 'AttributeFormatParser.php';
 
 /**
- * Description of DOMExtractor
+ * Description of DOMDriver
  *
  * @author ricardperez
  */
-class DOMExtractor
+class DOMDriver extends Driver
 {
-  public function extractProductsFromDOM($html, $descriptionFileJSON, $site)
+  public function extractProducts($url, $parameters, $descriptionFileJSON)
+  {
+    $urlAttributeParser = new AttributeFormatParser("", $parameters);
+    $formattedURL= $urlAttributeParser->parse($url);
+    $html = $this->getHTMLContentsFromURL($formattedURL);
+    
+    return $this->extractProductsFromHTML($html, $descriptionFileJSON);
+  }
+  
+  protected function extractProductsFromHTML($html, $descriptionFileJSON)
   {
     $elements = array();
 
@@ -29,7 +39,6 @@ class DOMExtractor
       $element = $this->createProductFromDOMElement($listElement, $descriptionFileJSON["element"]);
       if ($element != null)
       {
-        $element['site'] = $site;
         array_push($elements, $element);
       }
     }
