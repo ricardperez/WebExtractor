@@ -9,6 +9,7 @@
 require_once 'DOMDriver.php';
 require_once 'JSONDriver.php';
 require_once 'AttributeFormatParser.php';
+require_once 'Logger/Logger.php';
 
 class WebExtractor
 {
@@ -42,10 +43,16 @@ class WebExtractor
       if ($this->areRequiredParametersFulfilled($configuration['requiredParameters'], $parameters))
       {
         $site = $configuration['name'];
+        
+        Logger::debug("Going to get products from ", $site);
 
         $items = $this->extractProductsFromSite($site, $configuration['url'], $configuration['file'], $parameters);
 
         $allItems = array_merge($allItems, $items);
+      }
+      else
+      {
+        Logger::debug("Don't have the required parameters for ", $configuration);
       }
     }
 
