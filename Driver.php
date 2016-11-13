@@ -1,5 +1,7 @@
 <?php
 
+include_once 'Logger/Logger.php';
+
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,6 +12,7 @@ abstract class Driver
 {
   public function getHTMLContentsFromURL($url)
   {
+    Logger::debug("Parsing URL:", $url);
     $ch = curl_init();
     $timeout = 5;
     curl_setopt($ch, CURLOPT_URL, $url);

@@ -8,6 +8,7 @@
 
 require_once 'Driver.php';
 require_once 'AttributeFormatParser.php';
+require_once 'Logger/Logger.php';
 
 /**
  * Description of DOMDriver
@@ -33,6 +34,10 @@ class DOMDriver extends Driver
     @$dom->loadHTML($html);
     
     $elementsList = $this->extractAllDOMElementsMatching($dom, $descriptionFileJSON["elementsList"]);
+    if (empty($elementsList))
+    {
+      Logger::debug("Elements list is empty");
+    }
 
     foreach ($elementsList as $listElement)
     {
@@ -41,6 +46,11 @@ class DOMDriver extends Driver
       {
         array_push($elements, $element);
       }
+    }
+    
+    if (empty($elements))
+    {
+      Logger::debug("No elements found");
     }
 
     return $elements;
@@ -126,6 +136,7 @@ class DOMDriver extends Driver
       $element = $this->findFirstDOMElementMatching($element, $jsonSchema);
       if ($element == null)
       {
+        Logger::debug("Element is null for schema: ", $jsonSchema, " - and element: ", $element);
         return array();
       }
 
@@ -138,6 +149,11 @@ class DOMDriver extends Driver
     {
       $lastJson = $json[$nSchemas - 1];
       $elementsList = $this->findAllDOMElementsMathching($element, $lastJson);
+      
+      if (empty($elementsList))
+      {
+        Logger::debug("No elements found in last element with last json: ", $lastJson);
+      }
     }
 
     return $elementsList;
